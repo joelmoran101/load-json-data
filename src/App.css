@@ -16,3 +16,121 @@
   margin-bottom: 1.5em;
   font-family: 'Georgia', serif;
 }
+
+/* Header section styles */
+.header-section {
+  margin-bottom: 20px;
+}
+
+.last-update {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Chart container styles */
+.chart-container {
+  position: relative;
+  margin: 20px 0;
+}
+
+.chart-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 8px;
+}
+
+/* Controls section styles */
+.controls-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.refresh-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 140px;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.refresh-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Filters section */
+.filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filter-button {
+  background-color: #636EFA;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.filter-button:hover:not(:disabled) {
+  background-color: #5a67d8;
+  transform: translateY(-1px);
+}
+
+.filter-button:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.filter-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .data-container {
+    padding: 1em;
+    margin: 1em;
+  }
+  
+  .filters {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .filter-button {
+    width: 200px;
+  }
+}
