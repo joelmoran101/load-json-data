@@ -1,19 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import Plot from 'react-plotly.js';
 import "./App.css";
 import useChartData from "./hooks/useChartData";
 import Loading from "./components/Loading";
 import ErrorDisplay from "./components/ErrorDisplay";
+import ChartSelector from "./components/ChartSelector";
 
 export const DataContainer = ({ children, chartOptions = {} }) => {
+  const [displayMode, setDisplayMode] = useState('grid'); // 'grid' or 'single'
+  
   const {
-    chartData,
     loading,
     error,
     lastFetch,
     refetch,
     updateChartOptions,
-    hasData
+    hasData,
+    // New properties for multiple chart support
+    allCharts,
+    selectedCharts,
+    selectedChartIds,
+    selectChart,
+    selectMultipleCharts,
+    toggleChartSelection,
+    hasCharts
   } = useChartData(chartOptions);
 
   // Handle chart options updates from parent
@@ -47,35 +57,115 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
           <Loading message="Loading chart data from MongoDB..." />
         )}
         
+        {/* Chart Selector */}
+        {hasCharts && (
+          <ChartSelector
+            allCharts={allCharts}
+            selectedChartIds={selectedChartIds}
+            onSelectChart={selectChart}
+            onToggleChart={toggleChartSelection}
+            onSelectMultiple={selectMultipleCharts}
+            loading={loading}
+            allowMultiple={displayMode === 'grid'}
+          />
+        )}
+        
+        {/* Display Mode Toggle */}
+        {selectedCharts.length > 1 && (
+          <div className="display-mode-controls">
+            <button 
+              onClick={() => setDisplayMode('single')} 
+              className={`mode-button ${displayMode === 'single' ? 'active' : ''}`}
+            >
+              Single View
+            </button>
+            <button 
+              onClick={() => setDisplayMode('grid')} 
+              className={`mode-button ${displayMode === 'grid' ? 'active' : ''}`}
+            >
+              Grid View
+            </button>
+          </div>
+        )}
+
         {/* Chart display */}
-        {hasData && (
-          <div className="chart-container">
+        {selectedCharts.length > 0 && (
+          <div className={`charts-display ${displayMode}`}>
             {loading && (
               <div className="chart-loading-overlay">
-                <Loading message="Updating chart..." />
+                <Loading message="Updating charts..." />
               </div>
             )}
-            <Plot
-              data={chartData.data}
-              layout={{
-                ...chartData.layout,
-                // Override dimensions for responsiveness
-                autosize: true
-              }}
-              config={{
-                displayModeBar: true,
-                displaylogo: false,
-                responsive: true,
-                modeBarButtonsToRemove: [
-                  'pan2d',
-                  'select2d', 
-                  'lasso2d',
-                  'autoScale2d'
-                ]
-              }}
-              style={{ width: '100%', height: '600px' }}
-              useResizeHandler={true}
-            />
+            
+            {displayMode === 'single' ? (
+              // Single chart view - show first selected chart
+              <div className="single-chart-container">
+                <h3>{selectedCharts[0].title}</h3>
+                {selectedCharts[0].description && (
+                  <p className="chart-description">{selectedCharts[0].description}</p>
+                )}
+                <Plot
+                  data={selectedCharts[0].plotlyData.data}
+                  layout={{
+                    ...selectedCharts[0].plotlyData.layout,
+                    autosize: true
+                  }}
+                  config={{
+                    displayModeBar: true,
+                    displaylogo: false,
+                    responsive: true,
+                    modeBarButtonsToRemove: [
+                      'pan2d',
+                      'select2d', 
+                      'lasso2d',
+                      'autoScale2d'
+                    ]
+                  }}
+                  style={{ width: '100%', height: '600px' }}
+                  useResizeHandler={true}
+                />
+              </div>
+            ) : (
+              // Grid view - show all selected charts
+              <div className="charts-grid">
+                {selectedCharts.map((chart, index) => (
+                  <div key={chart.id} className="chart-item-grid">
+                    <div className="chart-header">
+                      <h4>{chart.title}</h4>
+                      {chart.description && (
+                        <p className="chart-description-small">{chart.description}</p>
+                      )}
+                    </div>
+                    <Plot
+                      data={chart.plotlyData.data}
+                      layout={{
+                        ...chart.plotlyData.layout,
+                        autosize: true,
+                        // Adjust layout for smaller grid items
+                        margin: { l: 50, r: 30, t: 30, b: 50 }
+                      }}
+                      config={{
+                        displayModeBar: false,
+                        displaylogo: false,
+                        responsive: true
+                      }}
+                      style={{ 
+                        width: '100%', 
+                        height: selectedCharts.length === 1 ? '600px' : '400px' 
+                      }}
+                      useResizeHandler={true}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* No charts selected message */}
+        {hasCharts && selectedCharts.length === 0 && (
+          <div className="no-charts-selected">
+            <p>Please select at least one chart to display.</p>
           </div>
         )}
         

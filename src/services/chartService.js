@@ -17,7 +17,12 @@ const chartService = {
           ...options
         }
       });
-      return response.data;
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
       console.error('Error fetching chart data:', error);
       throw new Error('Failed to fetch chart data from server');
@@ -38,12 +43,11 @@ const chartService = {
     try {
       const response = await api.get(`/charts/${chartId}`);
       
-      // Validate response structure
-      if (!response.data || !response.data.success || !response.data.chart) {
-        throw new Error('Invalid response format from server');
+      if (response.data.success && response.data.data && response.data.data.chart) {
+        return response.data.data.chart;
+      } else {
+        throw new Error('Invalid response format');
       }
-      
-      return response.data.chart;
     } catch (error) {
       // Don't log sensitive information in production
       if (process.env.NODE_ENV === 'development') {
@@ -62,6 +66,70 @@ const chartService = {
   },
 
   /**
+   * Get all available charts with their metadata and plotly data
+   * @returns {Promise} Promise that resolves to array of all charts with metadata
+   */
+  getAllCharts: async () => {
+    try {
+      // First get the list of all charts
+      const chartsResponse = await api.get('/charts', {
+        params: { page: 1, limit: 100 } // Get up to 100 charts
+      });
+      
+      // Handle the API response structure
+      if (chartsResponse.data.success && 
+          chartsResponse.data.data && 
+          chartsResponse.data.data.charts && 
+          chartsResponse.data.data.charts.length > 0) {
+        
+        // Fetch full data for each chart
+        const chartPromises = chartsResponse.data.data.charts.map(async (chart) => {
+          try {
+            const chartResponse = await api.get(`/charts/${chart._id}`);
+            
+            if (chartResponse.data.success && 
+                chartResponse.data.data && 
+                chartResponse.data.data.chart) {
+              return {
+                id: chart._id,
+                title: chart.chartTitle || chartResponse.data.data.chart.chartTitle || 'Untitled Chart',
+                description: chart.description || chartResponse.data.data.chart.description || '',
+                plotlyData: chartResponse.data.data.chart.plotlyData,
+                metadata: {
+                  createdAt: chart.createdAt || chartResponse.data.data.chart.createdAt,
+                  updatedAt: chart.updatedAt || chartResponse.data.data.chart.updatedAt
+                }
+              };
+            }
+            return null;
+          } catch (err) {
+            console.warn(`Failed to fetch chart ${chart._id}:`, err.message);
+            return null;
+          }
+        });
+        
+        const allCharts = await Promise.all(chartPromises);
+        return allCharts.filter(chart => chart !== null);
+      }
+      
+      throw new Error('No charts available');
+    } catch (error) {
+      console.error('Error fetching all charts:', error);
+      
+      // Provide more detailed error information
+      if (error.response) {
+        console.error('API Response:', error.response.status, error.response.data);
+        throw new Error(`API Error ${error.response.status}: ${error.response.data?.error || 'Unknown error'}`);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+        throw new Error('No response from server. Please check if the API server is running.');
+      } else {
+        throw new Error('Failed to fetch chart data from server');
+      }
+    }
+  },
+
+  /**
    * Get the first available chart (for demo purposes)
    * @returns {Promise} Promise that resolves to the first chart's plotly data
    */
@@ -72,19 +140,39 @@ const chartService = {
         params: { page: 1, limit: 1 }
       });
       
-      if (chartsResponse.data.success && chartsResponse.data.charts.length > 0) {
-        const firstChartId = chartsResponse.data.charts[0]._id;
+      // Handle the API response structure
+      if (chartsResponse.data.success && 
+          chartsResponse.data.data && 
+          chartsResponse.data.data.charts && 
+          chartsResponse.data.data.charts.length > 0) {
+        
+        const firstChartId = chartsResponse.data.data.charts[0]._id;
+        
         // Then get the full chart data including plotlyData
         const chartResponse = await api.get(`/charts/${firstChartId}`);
-        if (chartResponse.data.success && chartResponse.data.chart) {
-          return chartResponse.data.chart.plotlyData;
+        
+        if (chartResponse.data.success && 
+            chartResponse.data.data && 
+            chartResponse.data.data.chart && 
+            chartResponse.data.data.chart.plotlyData) {
+          return chartResponse.data.data.chart.plotlyData;
         }
       }
       
       throw new Error('No charts available');
     } catch (error) {
       console.error('Error fetching first chart:', error);
-      throw new Error('Failed to fetch chart data from server');
+      
+      // Provide more detailed error information
+      if (error.response) {
+        console.error('API Response:', error.response.status, error.response.data);
+        throw new Error(`API Error ${error.response.status}: ${error.response.data?.error || 'Unknown error'}`);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+        throw new Error('No response from server. Please check if the API server is running.');
+      } else {
+        throw new Error('Failed to fetch chart data from server');
+      }
     }
   },
 
