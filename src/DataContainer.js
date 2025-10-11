@@ -10,6 +10,7 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
   const [displayMode, setDisplayMode] = useState('grid'); // 'grid' or 'single'
   
   const {
+    chartData,
     loading,
     error,
     lastFetch,
@@ -166,6 +167,34 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
         {hasCharts && selectedCharts.length === 0 && (
           <div className="no-charts-selected">
             <p>Please select at least one chart to display.</p>
+          </div>
+        )}
+        
+        {/* Fallback chart display when API fails but we have cached data */}
+        {!hasCharts && hasData && error && (
+          <div className="fallback-chart-display">
+            <h3>Displaying Fallback Chart Data</h3>
+            <p>Showing cached chart while backend is unavailable</p>
+            <Plot
+              data={chartData.data}
+              layout={{
+                ...chartData.layout,
+                autosize: true
+              }}
+              config={{
+                displayModeBar: true,
+                displaylogo: false,
+                responsive: true,
+                modeBarButtonsToRemove: [
+                  'pan2d',
+                  'select2d', 
+                  'lasso2d',
+                  'autoScale2d'
+                ]
+              }}
+              style={{ width: '100%', height: '600px' }}
+              useResizeHandler={true}
+            />
           </div>
         )}
         

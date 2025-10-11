@@ -3,6 +3,22 @@ import React, { useState } from 'react';
 import ErrorDisplay from '../ErrorDisplay';
 import Loading from '../Loading';
 
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * ChartList component
+ * 
+ * @param {Object} props - Component props
+ * @param {Array} props.charts - List of charts to display
+ * @param {Function} props.onChartSelect - Function to call when a chart is selected
+ * @param {Function} props.onChartDelete - Function to call when a chart is deleted
+ * @param {Function} props.onChartEdit - Function to call when a chart is edited
+ * @param {Function} props.onRefresh - Function to call when the chart list is refreshed
+ * @param {Array} props.selectedChartIds - List of currently selected chart IDs
+ * @param {boolean} props.isLoading - Whether the component is currently loading
+ * @param {Error} props.error - Error to display if the component encounters an error
+ * @param {boolean} props.allowMultiSelect - Whether to allow multi-select of charts
+ */
+/*******  5621a086-7a7a-4a59-bb40-a1eea9684246  *******/
 const ChartList = ({ 
   charts = [], 
   onChartSelect, 
@@ -15,6 +31,7 @@ const ChartList = ({
   allowMultiSelect = false
 }) => {
   const [selectedIds, setSelectedIds] = useState(selectedChartIds);
+
 
   const handleChartToggle = (chartId) => {
     if (allowMultiSelect) {
