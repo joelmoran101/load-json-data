@@ -1,8 +1,9 @@
 // src/App.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import JSONExpressPage from './pages/JSONExpressPage';
 import FastAPIPage from './pages/FastAPIPage';
+import { initializeEnvironment } from './utils/envValidation';
 import './App.css';
 
 // Navigation component
@@ -35,6 +36,16 @@ const Navigation = () => {
 };
 
 function App() {
+  // Initialize and validate environment variables on app start
+  useEffect(() => {
+    try {
+      initializeEnvironment();
+    } catch (error) {
+      console.error('Failed to initialize environment:', error);
+      // You could show an error boundary or fallback UI here
+    }
+  }, []);
+
   return (
     <Router>
       <div className="App">

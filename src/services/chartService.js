@@ -50,7 +50,7 @@ const chartService = {
       }
     } catch (error) {
       // Don't log sensitive information in production
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.error('Error fetching chart by ID:', error);
       }
       

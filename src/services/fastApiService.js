@@ -1,7 +1,7 @@
 // src/services/fastApiService.js
 import axios from 'axios';
 
-const FASTAPI_BASE_URL = process.env.REACT_APP_FASTAPI_URL || 'http://localhost:8000';
+const FASTAPI_BASE_URL = import.meta.env.VITE_FASTAPI_URL || 'http://localhost:8000';
 
 // Create axios instance with default config
 const fastApiClient = axios.create({

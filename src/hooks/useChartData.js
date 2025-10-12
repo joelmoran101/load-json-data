@@ -65,7 +65,7 @@ const useChartData = (options = {}) => {
       setChartData(plotlyData);
       
       // Log additional debug info in development
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.log('🔍 Debug info:', {
           errorType: err.constructor.name,
           errorMessage: err.message,

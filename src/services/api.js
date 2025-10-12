@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 // Use environment variable or fallback to localhost for development
-const API_BASE = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
 // Log API base URL in development for debugging
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.DEV) {
   console.log('🔗 API Base URL:', API_BASE);
 }
 
@@ -23,7 +23,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // Add timestamp for request tracking in development
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       config.headers['X-Request-Time'] = new Date().toISOString();
     }
     return config;
@@ -36,7 +36,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     // Log errors in development only
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.error('API Error:', error);
     }
     
