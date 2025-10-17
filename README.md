@@ -333,10 +333,25 @@ The MongoDB Atlas connection strings are stored in the backend servers, not in t
 In your React app, you only have API endpoint URLs:
 
 ```bash
-# React app only knows about the backend API URLs
+# React app only knows about the backend API URLs (in Development)
 VITE_API_BASE_URL=http://localhost:3001/api       # JSON Express API
 VITE_FASTAPI_URL=http://localhost:8000            # FastAPI Backend
+# In Production, update the .env.production and use the actual production API URLs 
+VITE_API_BASE_URL=https://actual-json-express-api-domain.com/api
+VITE_FASTAPI_URL=https://actual-fastapi-domain.com
+VITE_ENVIRONMENT=production
+VITE_APP_NAME=Financial Data Tracker
 ```
+## Screenshots
+
+### Dashboard Overview
+![Dashboard](./public/images/screenshots/326F6FF0-5A47-4490-843F-371953A55B0D.png)
+
+### Chart Display
+![Charts](./public/images/screenshots/492438F4-35E6-42BD-9E14-AB54FF9A808A.png)
+
+### Login Screen
+![Login](./public/images/screenshots/25795765-F9D8-4E68-8676-C18459B06EF3.png)
 
 ## 🔒 Security Benefits
 
