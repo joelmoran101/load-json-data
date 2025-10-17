@@ -278,10 +278,21 @@ MongoDB Atlas ← Backend APIs ← React Frontend
 
 #### React Frontend Components (Data Requesters)
 
+### Login Screen
+![Login](./public/images/screenshots/25795765-F9D8-4E68-8676-C18459B06EF3.png)
+
+### Dashboard Overview
+![Dashboard](./public/images/screenshots/9E0EA8B0-24E3-4F42-8754-B27198A060EA.png)
+
+
 **For JSON Express API:**
 - File: `src/hooks/useChartData.js`
 - Component: Uses `src/services/api.js`
 - What it does: Makes HTTP requests to `http://localhost:3001/api`
+
+### Chart Display
+![Charts](./public/images/screenshots/492438F4-35E6-42BD-9E14-AB54FF9A808A.png)
+
 
 **For FastAPI Backend:**
 - File: `src/hooks/useFastAPICharts.js`
@@ -342,16 +353,7 @@ VITE_FASTAPI_URL=https://actual-fastapi-domain.com
 VITE_ENVIRONMENT=production
 VITE_APP_NAME=Financial Data Tracker
 ```
-## Screenshots
 
-### Dashboard Overview
-![Dashboard](./public/images/screenshots/326F6FF0-5A47-4490-843F-371953A55B0D.png)
-
-### Chart Display
-![Charts](./public/images/screenshots/492438F4-35E6-42BD-9E14-AB54FF9A808A.png)
-
-### Login Screen
-![Login](./public/images/screenshots/25795765-F9D8-4E68-8676-C18459B06EF3.png)
 
 ## 🔒 Security Benefits
 
