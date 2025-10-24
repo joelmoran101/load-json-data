@@ -133,7 +133,8 @@ src/
 
 **Start the backend server**: Run the server from the terminal in project directory (`json-express-api`)
 ```bash
-node app.js
+node app.js 
+or npm run dev
 ```
 
 1. **User Opens Page**
@@ -244,6 +245,8 @@ cp .env.example .env
 
 # 5. Start the app
 npm run dev
+or
+npm start
 ```
 
 ## 🌍 Environment Configuration
