@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getCSRFToken, requiresCSRFProtection } from '../utils/csrfToken';
 
 // Use environment variable or fallback to localhost for development
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
@@ -19,13 +20,26 @@ const api = axios.create({
   },
 });
 
-// Request interceptor for additional security headers
+// Request interceptor for additional security headers and CSRF protection
 api.interceptors.request.use(
   (config) => {
+    // Add CSRF token to state-changing requests (POST, PUT, DELETE, PATCH)
+    if (requiresCSRFProtection(config.method)) {
+      const csrfToken = getCSRFToken();
+      if (csrfToken) {
+        config.headers['X-CSRF-Token'] = csrfToken;
+        
+        if (import.meta.env.DEV) {
+          console.log(`🔒 CSRF token added to ${config.method.toUpperCase()} request`);
+        }
+      }
+    }
+    
     // Add timestamp for request tracking in development
     if (import.meta.env.DEV) {
       config.headers['X-Request-Time'] = new Date().toISOString();
     }
+    
     return config;
   },
   (error) => Promise.reject(error)

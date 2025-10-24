@@ -1,4 +1,5 @@
 import api from './api';
+import { refreshCSRFToken, clearCSRFToken } from '../utils/csrfToken';
 
 const authService = {
   /**
@@ -16,6 +17,9 @@ const authService = {
       
       if (response.data.success && response.data.data.user) {
         // Cookie is automatically set by the server (httpOnly)
+        // Refresh CSRF token after successful login for added security
+        refreshCSRFToken();
+        
         // Store user data in memory/state, not localStorage
         return response.data.data.user;
       } else {
@@ -47,6 +51,9 @@ const authService = {
       
       if (response.data.success) {
         // Cookie is automatically cleared by the server
+        // Clear CSRF token on logout
+        clearCSRFToken();
+        
         return response.data;
       } else {
         throw new Error('Logout failed');
@@ -55,7 +62,9 @@ const authService = {
       console.error('Logout failed:', error);
       
       // Even if logout fails on server, we should clear client-side state
-      // The cookie might still be cleared by the server
+      // Clear CSRF token even on logout failure
+      clearCSRFToken();
+      
       if (error.response?.status >= 500) {
         throw new Error('Server error during logout');
       } else {
@@ -125,6 +134,9 @@ const authService = {
       
       if (response.data.success && response.data.data.user) {
         // New cookie is automatically set by the server
+        // Refresh CSRF token when auth token is refreshed
+        refreshCSRFToken();
+        
         return response.data.data.user;
       } else {
         throw new Error('Token refresh failed');

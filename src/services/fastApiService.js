@@ -1,5 +1,6 @@
 // src/services/fastApiService.js
 import axios from 'axios';
+import { getCSRFToken, requiresCSRFProtection } from '../utils/csrfToken';
 
 const FASTAPI_BASE_URL = import.meta.env.VITE_FASTAPI_URL || 'http://localhost:8000';
 
@@ -12,9 +13,21 @@ const fastApiClient = axios.create({
   },
 });
 
-// Request interceptor for logging
+// Request interceptor for logging and CSRF protection
 fastApiClient.interceptors.request.use(
   (config) => {
+    // Add CSRF token to state-changing requests (POST, PUT, DELETE, PATCH)
+    if (requiresCSRFProtection(config.method)) {
+      const csrfToken = getCSRFToken();
+      if (csrfToken) {
+        config.headers['X-CSRF-Token'] = csrfToken;
+        
+        if (import.meta.env.DEV) {
+          console.log(`🔒 CSRF token added to FastAPI ${config.method.toUpperCase()} request`);
+        }
+      }
+    }
+    
     console.log(`FastAPI Request: ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   },
