@@ -2,6 +2,22 @@
 
 A React application that displays interactive Plotly charts stored in MongoDB Atlas, connecting to two different backend APIs (Express.js & FastAPI) with dynamic filtering capabilities.
 
+🚀 Vite Migration Complete!
+⚠️ Important Update: This project has been successfully migrated from Create React App (CRA) to Vite for better performance and modern tooling.
+
+Original CRA version: Available on fastAPI branch
+Current Vite version: On vite-migration branch
+
+Why We Migrated to Vite
+
+Create React App was officially deprecated and is no longer maintained. Besides, Vite offers:
+
+⚡ Lightning-fast development server (222ms startup vs several seconds). It makes coding a lot faster
+🔥 Instant hot module replacement (HMR)
+📦 Optimized production builds with better tree-shaking
+🎯 Native ES modules support
+🛠️ Modern tooling that's actively maintained
+
 ![Architecture Diagram](./public/images/architecture-diagram/architecture-diagram.png)
 
 ## 📚 Documentation
@@ -55,7 +71,14 @@ npm run test     # Run tests with Vitest
 This dashboard fetches and displays Plotly JSON chart data from MongoDB Atlas without modifying the original database. You can:
 
 - **View charts** from two different backend systems
+• ChartSelector shows list of available charts
+• User clicks a chart
+• PlotlyChartViewer renders the Plotly chart
 - **Filter data** by date ranges, companies, and metrics (client-side)
+• User adjusts date range, company, or metrics; still needs
+refinements
+• Filters run in the browser (not in database)
+• Chart updates instantly
 - **Preserve data integrity** - all filtering happens in memory, never touching the database
 
 ### Backend Integration
