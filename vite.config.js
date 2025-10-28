@@ -9,8 +9,16 @@ export default defineConfig({
     port: 3000,
   },
   build: {
-    outDir: 'build',
+    outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'plotly-vendor': ['plotly.js', 'react-plotly.js'],
+        },
+      },
+    },
   },
   test: {
     globals: true,
