@@ -63,12 +63,13 @@ export const initializeEnvironment = () => {
       const apiUrl = import.meta.env.VITE_API_BASE_URL;
       const fastApiUrl = import.meta.env.VITE_FASTAPI_URL;
       
-      if (!apiUrl.startsWith('https://')) {
-        console.warn('⚠️  Warning: API Base URL should use HTTPS in production');
+      // Allow relative paths for proxy setup (e.g., /api)
+      if (!apiUrl.startsWith('https://') && !apiUrl.startsWith('/')) {
+        console.warn('⚠️  Warning: API Base URL should use HTTPS or relative path in production');
       }
       
-      if (!fastApiUrl.startsWith('https://')) {
-        console.warn('⚠️  Warning: FastAPI URL should use HTTPS in production');
+      if (!fastApiUrl.startsWith('https://') && !fastApiUrl.startsWith('/')) {
+        console.warn('⚠️  Warning: FastAPI URL should use HTTPS or relative path in production');
       }
       
       if (apiUrl.includes('localhost') || fastApiUrl.includes('localhost')) {
