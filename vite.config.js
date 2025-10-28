@@ -4,13 +4,23 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      buffer: 'buffer/',
+    },
+  },
+  define: {
+    'process.env': {},
+    global: 'globalThis',
+  },
   server: {
     open: true,
     port: 3000,
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -39,6 +49,7 @@ export default defineConfig({
     exclude: [],
   },
   optimizeDeps: {
+    include: ['buffer'],
     esbuildOptions: {
       loader: {
         '.js': 'jsx',
