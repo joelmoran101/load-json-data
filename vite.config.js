@@ -16,6 +16,13 @@ export default defineConfig({
   server: {
     open: true,
     port: 3000,
+    proxy: {
+      '/api': {
+        target: 'https://json-express-api.vercel.app',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
   },
   build: {
     outDir: 'dist',
