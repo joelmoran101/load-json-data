@@ -6,14 +6,12 @@ const AuthTest = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [email, setEmail] = useState('demo@example.com');
-  const [password, setPassword] = useState('demo123');
-  const [demoUsers, setDemoUsers] = useState([]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   // Check authentication status on component mount
   useEffect(() => {
     checkAuthStatus();
-    loadDemoUsers();
     
     // Listen for session expiration events
     const handleSessionExpired = (event) => {
@@ -36,15 +34,6 @@ const AuthTest = () => {
       }
     } catch (error) {
       console.error('Failed to check auth status:', error);
-    }
-  };
-
-  const loadDemoUsers = async () => {
-    try {
-      const users = await authService.getDemoUsers();
-      setDemoUsers(users);
-    } catch (error) {
-      console.log('Demo users not available (probably production)');
     }
   };
 
@@ -114,11 +103,6 @@ const AuthTest = () => {
     }
   };
 
-  const fillDemoCredentials = (demoUser) => {
-    setEmail(demoUser.email);
-    setPassword(demoUser.password);
-  };
-
   return (
     <div className="auth-test-container">
       <h2>🔐 Secure Cookie Authentication Test</h2>
@@ -179,29 +163,6 @@ const AuthTest = () => {
       ) : (
         <div className="login-form">
           <h3>🔑 Login Required</h3>
-          
-          {demoUsers.length > 0 && (
-            <div className="demo-users">
-              <h4>Demo Users (Development Only)</h4>
-              <div className="demo-user-list">
-                {demoUsers.map((demoUser, index) => (
-                  <div key={index} className="demo-user">
-                    <div className="demo-user-info">
-                      <strong>{demoUser.name}</strong> ({demoUser.role})
-                      <br />
-                      <small>{demoUser.email} / {demoUser.password}</small>
-                    </div>
-                    <button 
-                      onClick={() => fillDemoCredentials(demoUser)}
-                      className="btn btn-small"
-                    >
-                      Use
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
           
           <form onSubmit={handleLogin}>
             <div className="form-group">

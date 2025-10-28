@@ -154,30 +154,6 @@ const authService = {
   },
 
   /**
-   * Get demo users for testing (development only)
-   * @returns {Promise} Promise that resolves to demo users list
-   */
-  getDemoUsers: async () => {
-    try {
-      const response = await api.get('/auth/demo-users');
-      
-      if (response.data.success && response.data.data.users) {
-        return response.data.data.users;
-      } else {
-        throw new Error('Failed to get demo users');
-      }
-    } catch (error) {
-      if (error.response?.status === 404) {
-        // Demo users not available (probably production)
-        return [];
-      }
-      
-      console.error('Failed to get demo users:', error);
-      throw new Error('Failed to get demo users');
-    }
-  },
-
-  /**
    * Handle API response for authentication errors
    * This function should be called by axios response interceptor
    * @param {Object} error - Axios error object
