@@ -111,8 +111,8 @@ const FastAPIPage = () => {
       {connectionStatus === 'disconnected' && !isLoading && (
         <div className="connection-error">
           <ErrorDisplay 
-            error="Cannot connect to FastAPI backend. Please ensure the server is running on http://localhost:8000"
-            onRetry={retryConnection}
+            error="FastAPI backend is currently unavailable on Vercel (serverless limitations). All chart data is available through the JSON Express API on the main page."
+            onRetry={null}
           />
         </div>
       )}
