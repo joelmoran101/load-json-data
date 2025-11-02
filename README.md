@@ -2,6 +2,21 @@
 
 A React application that displays interactive Plotly charts stored in MongoDB Atlas, connecting to two different backend APIs (Express.js & FastAPI) with dynamic filtering capabilities.
 
+## 🎯 What Does This App Do?
+
+This dashboard fetches and displays Plotly JSON chart data from MongoDB Atlas without modifying the original database. You can:
+
+- **View charts** from two different backend systems
+• ChartSelector shows list of available charts
+• User clicks a chart
+• PlotlyChartViewer renders the Plotly chart
+- **Filter data** by date ranges, companies, and metrics (client-side)
+• User adjusts date range, company, or metrics; still needs
+refinements
+• Filters run in the browser (not in database)
+• Chart updates instantly
+- **Preserve data integrity** - all filtering happens in memory, never touching the database
+
 ⚠️ This project has been bootstrapped with Vite for better performance and modern tooling.
 Vite offers:
 
@@ -75,21 +90,6 @@ npm run test     # Run tests with Vitest
 
 ---
 
-## 🎯 What Does This App Do?
-
-This dashboard fetches and displays Plotly JSON chart data from MongoDB Atlas without modifying the original database. You can:
-
-- **View charts** from two different backend systems
-• ChartSelector shows list of available charts
-• User clicks a chart
-• PlotlyChartViewer renders the Plotly chart
-- **Filter data** by date ranges, companies, and metrics (client-side)
-• User adjusts date range, company, or metrics; still needs
-refinements
-• Filters run in the browser (not in database)
-• Chart updates instantly
-- **Preserve data integrity** - all filtering happens in memory, never touching the database
-
 ### Backend Integration
 
 **JSON Express API** (`http://localhost:3001/api`)
@@ -106,8 +106,16 @@ Both APIs feed the same React components - that's the power of modular architect
 
 ## 📁 Project Structure
 
+load-json-data/       # Root Directory
+├── documentation/    # All .md files (except README)
+├── scripts/          # Development scripts
+├── src/              # React source code
+├── public/           # Static assets
+├── README.md         # Main documentation
+└── [config files]    # package.json, vite.config.js, etc.
 ```
-src/
+
+src/.                   # React source code
 ├── services/           # API communication layer
 │   ├── api.js          # Express.js API client
 │   ├── fastApiService.js  # FastAPI client
@@ -131,6 +139,8 @@ src/
 │
 └── utils/              # Utility functions
     ├── envValidation.js
+    ├── envValidation.test.js
+    ├── basic.test.js
     └── csrfToken.js
 ```
 
@@ -166,7 +176,7 @@ VITE_ENVIRONMENT=production
 VITE_APP_NAME=Financial Data Tracker
 ```
 
-⚠️ **Important**: MongoDB connection strings are stored in your **backend** `.env` files, not in this React app. The React app only knows about API endpoints.
+⚠️ **Important**: MongoDB connection strings are stored in the **backend** `.env` files, not in this React app. The React app only knows about API endpoints.
 
 ---
 
