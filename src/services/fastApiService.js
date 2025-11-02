@@ -7,7 +7,7 @@ const FASTAPI_BASE_URL = import.meta.env.VITE_FASTAPI_URL || 'http://localhost:8
 // Create axios instance with default config
 const fastApiClient = axios.create({
   baseURL: FASTAPI_BASE_URL,
-  timeout: 10000,
+  timeout: 60000, // 60s for Render.com cold starts (free tier sleeps after inactivity)
   headers: {
     'Content-Type': 'application/json',
   },
