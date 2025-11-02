@@ -64,19 +64,38 @@ export const setCSRFTokenCookie = (token, cookieName = 'XSRF-TOKEN') => {
 };
 
 /**
- * Initialize CSRF token if not already present
+ * Initialize CSRF token by fetching from backend
  * This should be called on app initialization
- * @returns {string} The CSRF token
+ * @returns {Promise<string>} The CSRF token
  */
-export const initializeCSRFToken = () => {
+export const initializeCSRFToken = async () => {
   let token = getCSRFTokenFromCookie();
   
   if (!token) {
-    token = generateCSRFToken();
-    setCSRFTokenCookie(token);
-    
-    if (import.meta.env.DEV) {
-      console.log('🔒 CSRF token initialized');
+    // Instead of generating locally, fetch from backend
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+      const response = await fetch(`${API_BASE}/csrf-token`, {
+        credentials: 'include' // Send cookies
+      });
+      
+      if (response.ok) {
+        // Backend sets the cookie, now read it
+        token = getCSRFTokenFromCookie();
+        
+        if (import.meta.env.DEV) {
+          console.log('🔒 CSRF token fetched from backend');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch CSRF token from backend:', error);
+      // Fallback: generate locally (for offline development)
+      token = generateCSRFToken();
+      setCSRFTokenCookie(token);
+      
+      if (import.meta.env.DEV) {
+        console.log('🔒 CSRF token initialized locally (fallback)');
+      }
     }
   }
   

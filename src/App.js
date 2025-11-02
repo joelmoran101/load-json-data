@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import JSONExpressPage from './pages/JSONExpressPage';
 import FastAPIPage from './pages/FastAPIPage';
 import { initializeEnvironment } from './utils/envValidation';
+import { initializeCSRFToken } from './utils/csrfToken';
 import './App.css';
 
 // Navigation component
@@ -38,12 +39,18 @@ const Navigation = () => {
 function App() {
   // Initialize and validate environment variables on app start
   useEffect(() => {
-    try {
-      initializeEnvironment();
-    } catch (error) {
-      console.error('Failed to initialize environment:', error);
-      // You could show an error boundary or fallback UI here
-    }
+    const initialize = async () => {
+      try {
+        initializeEnvironment();
+        // Initialize CSRF token from backend
+        await initializeCSRFToken();
+      } catch (error) {
+        console.error('Failed to initialize application:', error);
+        // You could show an error boundary or fallback UI here
+      }
+    };
+    
+    initialize();
   }, []);
 
   return (

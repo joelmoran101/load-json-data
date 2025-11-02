@@ -164,6 +164,49 @@ const AuthTest = () => {
         <div className="login-form">
           <h3>🔑 Login Required</h3>
           
+          <div className="demo-credentials">
+            <h4>🧪 Demo Accounts</h4>
+            <div className="demo-users">
+              <div className="demo-user">
+                <strong>Regular User:</strong>
+                <div className="credentials">
+                  <span>Email: demo@example.com</span>
+                  <span>Password: demo123</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('demo@example.com');
+                    setPassword('demo123');
+                  }}
+                  className="btn btn-secondary btn-small"
+                  disabled={loading}
+                >
+                  Use Demo User
+                </button>
+              </div>
+              
+              <div className="demo-user">
+                <strong>Admin User:</strong>
+                <div className="credentials">
+                  <span>Email: admin@example.com</span>
+                  <span>Password: admin123</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail('admin@example.com');
+                    setPassword('admin123');
+                  }}
+                  className="btn btn-secondary btn-small"
+                  disabled={loading}
+                >
+                  Use Admin User
+                </button>
+              </div>
+            </div>
+          </div>
+          
           <form onSubmit={handleLogin}>
             <div className="form-group">
               <label htmlFor="email">Email:</label>
