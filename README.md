@@ -2,15 +2,8 @@
 
 A React application that displays interactive Plotly charts stored in MongoDB Atlas, connecting to two different backend APIs (Express.js & FastAPI) with dynamic filtering capabilities.
 
-🚀 Vite Migration Complete!
-⚠️ Important Update: This project has been successfully migrated from Create React App (CRA) to Vite for better performance and modern tooling.
-
-Original CRA version: Available on fastAPI branch
-Current Vite version: On vite-migration branch
-
-Why We Migrated to Vite
-
-Create React App was officially deprecated and is no longer maintained. Besides, Vite offers:
+⚠️ This project has been bootstrapped with Vite for better performance and modern tooling.
+Vite offers:
 
 ⚡ Lightning-fast development server (222ms startup vs several seconds). It makes coding a lot faster
 🔥 Instant hot module replacement (HMR)
@@ -20,12 +13,28 @@ Create React App was officially deprecated and is no longer maintained. Besides,
 
 ![Architecture Diagram](./public/images/architecture-diagram/architecture-diagram.png)
 
+## Deployments
+- ** I used Vercel to deploy the frontend React App (load-json-data) together with the ReactExpress backend (json-express-api).
+    https://load-json-data.vercel.app/
+
+- ** The second backend api, fastAPI is deployed through Render.
+    https://fastapi-plotly-backend.onrender.com/
+
+Why Render is better for FastAPI
+
+•  ✅ Persistent server - No cold starts, always running
+•  ✅ Better for databases - Maintains connection pools
+•  ✅ Longer execution times - No strict timeouts
+•  ✅ WebSocket support - If needed in the future
+•  ✅ Free tier includes 750 hours/month - Enough for 24/7 operation
+
+
 ## 📚 Documentation
 
-- **[SECURITY.md](./SECURITY.md)** - Security features, authentication, CSRF protection
-- **[CSRF_IMPLEMENTATION.md](./CSRF_IMPLEMENTATION.md)** - Detailed CSRF protection guide  
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture, data flow, filtering
-- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Development notes, troubleshooting, AI coding tips
+- **[SECURITY.md](./documentation/SECURITY.md)** - Security features, authentication, CSRF protection
+- **[CSRF_IMPLEMENTATION.md](./documentation/CSRF_IMPLEMENTATION.md)** - Detailed CSRF protection guide  
+- **[ARCHITECTURE.md](./documentation/ARCHITECTURE.md)** - System architecture, data flow, filtering
+- **[DEVELOPMENT.md](./documentation/DEVELOPMENT.md)** - Development notes, troubleshooting, AI coding tips
 
 ---
 
@@ -131,7 +140,7 @@ src/
 - **Components** focus purely on UI
 - **Pages** compose everything together
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed explanations.
+See [ARCHITECTURE.md](./documentation/ARCHITECTURE.md) for detailed explanations.
 
 ---
 
@@ -177,12 +186,12 @@ VITE_APP_NAME=Financial Data Tracker
 ## 🔒 Security Highlights
 
 - ✅ **httpOnly Cookies** - Session tokens never accessible to JavaScript
-- ✅ **CSRF Protection** - Double-submit cookie pattern (see [CSRF_IMPLEMENTATION.md](./CSRF_IMPLEMENTATION.md))
+- ✅ **CSRF Protection** - Double-submit cookie pattern (see [CSRF_IMPLEMENTATION.md](./documentation/CSRF_IMPLEMENTATION.md))
 - ✅ **Secure Architecture** - Database credentials never exposed to frontend
 - ✅ **Environment Validation** - Runtime checks for required configuration
 - ✅ **HTTPS Enforcement** - Production builds validate secure connections
 
-See [SECURITY.md](./SECURITY.md) for complete security documentation.
+See [SECURITY.md](./documentation/SECURITY.md) for complete security documentation.
 
 ---
 
@@ -213,11 +222,17 @@ python3 run.py
 | Missing charts | Verify MongoDB Atlas connection in backend |
 | Auth failures | Check backend authentication endpoints |
 
-See [DEVELOPMENT.md](./DEVELOPMENT.md) for detailed troubleshooting.
+See [DEVELOPMENT.md](./documentation/DEVELOPMENT.md) for detailed troubleshooting.
 
 ---
 
 ## 🚀 Deployment
+
+- [ ] Deployed React app Frontend and ReactExpress Backend (Vercel)
+        https://load-json-data.vercel.app/
+- [ ] Deployed fastAPI Backend on Render
+        https://fastapi-plotly-backend.onrender.com/
+
 
 ### Pre-Production Checklist
 
@@ -225,7 +240,6 @@ See [DEVELOPMENT.md](./DEVELOPMENT.md) for detailed troubleshooting.
 - [ ] Deploy backend APIs (Heroku, AWS, Railway, etc.)
 - [ ] Update MongoDB connection strings in backend `.env` files
 - [ ] Test production build locally: `npm run build && npm run preview`
-- [ ] Deploy React app (Vercel, Netlify, etc.)
 - [ ] Verify HTTPS is enforced
 - [ ] Test CSRF protection
 - [ ] Monitor application logs
@@ -245,7 +259,7 @@ See [DEVELOPMENT.md](./DEVELOPMENT.md) for detailed troubleshooting.
 
 - **JSON Express** - Demonstrates legacy system integration
 - **FastAPI** - Shows modern backend with better validation
-- **Flexibility** - Same frontend works with different backend technologies
+- **Flexibility** - Same frontend works with different backend technologies. Will be integrating another backend API...
 
 ---
 
@@ -277,7 +291,7 @@ This is a personal learning project demonstrating:
 - Modular React architecture
 - AI-assisted development
 
-See [DEVELOPMENT.md](./DEVELOPMENT.md) for notes on AI-assisted coding practices.
+See [DEVELOPMENT.md](./documentation/DEVELOPMENT.md) for notes on AI-assisted coding practices.
 
 ---
 
@@ -291,6 +305,6 @@ MIT License - feel free to use this project as a learning resource.
 
 - Check the inline code comments - each module is documented
 - Review the detailed documentation files linked above
-- Use AI assistants like Windsurf, Warp, or Cursor for code explanations
+- Get in touch with me. https://www.linkedin.com/in/joel-moran-ph/
 
 **The modular structure guides you to the right file!**
