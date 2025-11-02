@@ -105,6 +105,7 @@ Both APIs feed the same React components - that's the power of modular architect
 ---
 
 ## 📁 Project Structure
+```
 
 load-json-data/       # Root Directory
 ├── documentation/    # All .md files (except README)
@@ -113,6 +114,8 @@ load-json-data/       # Root Directory
 ├── public/           # Static assets
 ├── README.md         # Main documentation
 └── [config files]    # package.json, vite.config.js, etc.
+```
+
 ```
 
 src/.                   # React source code
