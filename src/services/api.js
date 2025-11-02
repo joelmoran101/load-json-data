@@ -12,7 +12,7 @@ if (import.meta.env.DEV) {
 // Create axios instance with secure cookie configuration
 const api = axios.create({
   baseURL: API_BASE,
-  timeout: 10000,
+  timeout: 30000, // Increased to 30s for serverless cold starts
   withCredentials: true, // Send cookies with requests
   headers: {
     'Content-Type': 'application/json',
