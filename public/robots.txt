@@ -1,3 +1,4 @@
 # https://www.robotstxt.org/robotstxt.html
+# This application requires authentication - block all search engine crawlers
 User-agent: *
-Disallow:
+Disallow: /
