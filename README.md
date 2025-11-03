@@ -28,12 +28,21 @@ Vite offers:
 
 ![Architecture Diagram](./public/images/architecture-diagram/architecture-diagram.png)
 
-## Deployments
-- ** I used Vercel to deploy the frontend React App (load-json-data) together with the ReactExpress backend (json-express-api).
+## Deployment Test
+- ** I used Vercel to deploy the frontend React App (load-json-data) 
     https://load-json-data.vercel.app/
 
-- ** The second backend api, fastAPI is deployed through Render.
+The ReactExpress backend (json-express-api) and the second backend api, fastAPI are both deployed on Render.
+
+- ** ReactExpress json-express-api
+    https://json-express-api.onrender.com/
+
+- ** The second fastAPI-backend (Python)
     https://fastapi-plotly-backend.onrender.com/
+
+- ** My MongoDB Atlas has to be running and allows access to the IP whitelist, 0.0.0.0/0, to able to test the deployment links above. And cluster(0) has to be connected.
+
+![MongoDB Atlas Cluster(0)](./public/images/screenshots/MongoDB-Atlas-Cluster.png)
 
 Why Render is better for FastAPI
 
