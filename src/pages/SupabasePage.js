@@ -173,12 +173,13 @@ const SupabasePage = () => {
                 )}
                 
                 <PlotlyChartViewer
+                  key={`single-${selectedChartObjects[currentChartIndex]?.item_id}`}
                   chart={selectedChartObjects[currentChartIndex]}
                   showControls={true}
                   enableFilters={true}
                   className="single-chart-viewer"
                   width="100%"
-                  height={500}
+                  height={350}
                 />
               </div>
             )}
@@ -189,12 +190,12 @@ const SupabasePage = () => {
                 {selectedChartObjects.map((chart, index) => (
                   <div key={chart.item_id} className="grid-chart-item">
                     <PlotlyChartViewer
+                      key={`grid-${chart.item_id}`}
                       chart={chart}
                       showControls={false}
                       enableFilters={false}
                       className="grid-chart-viewer"
                       width="100%"
-                      height={350}
                     />
                   </div>
                 ))}

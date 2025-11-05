@@ -74,28 +74,40 @@ const PlotlyChartViewer = ({
 
   // Filter the chart data based on current filter settings
   const filteredPlotData = useMemo(() => {
-    if (!chart?.data || !enableFilters) return chart?.data || [];
+    if (!chart?.data) return [];
+    if (!enableFilters) return chart.data;
     
-    return chart.data.filter(trace => {
+    console.log('🔍 Filtering chart:', chart.title);
+    console.log('Original data traces:', chart.data.length);
+    console.log('Has time series:', hasTimeSeriesData);
+    console.log('Date range:', dateRange);
+    
+    const filteredData = chart.data.filter(trace => {
+      console.log('Checking trace:', trace.name);
+      
       // Company filter
       if (selectedCompanies.length > 0 && trace.name && !selectedCompanies.includes(trace.name)) {
+        console.log('  ❌ Filtered by company');
         return false;
       }
       
       // Metric filter (assuming trace names contain CCP or LTD)
-      if (selectedMetrics.length > 0 && trace.name) {
+      // Only apply if the chart seems to be about these metrics
+      if (selectedMetrics.length > 0 && selectedMetrics.length < 2 && trace.name) {
         const hasSelectedMetric = selectedMetrics.some(metric => 
           trace.name.toUpperCase().includes(metric.toUpperCase())
         );
         if (!hasSelectedMetric) {
+          console.log('  ❌ Filtered by metric');
           return false;
         }
       }
       
+      console.log('  ✅ Passed filters');
       return true;
     }).map(trace => {
-      // Date range filter for time series data
-      if (hasTimeSeriesData && (dateRange.start || dateRange.end) && trace.x && trace.y) {
+      // Date range filter for time series data - only apply if we have valid date data
+      if (hasTimeSeriesData && (dateRange.start || dateRange.end) && trace.x && trace.y && Array.isArray(trace.x)) {
         const filteredIndices = [];
         
         trace.x.forEach((xVal, index) => {
@@ -110,15 +122,29 @@ const PlotlyChartViewer = ({
           }
         });
         
-        return {
-          ...trace,
-          x: filteredIndices.map(i => trace.x[i]),
-          y: filteredIndices.map(i => trace.y[i])
-        };
+        // Only apply filtering if we found valid date indices
+        if (filteredIndices.length > 0) {
+          return {
+            ...trace,
+            x: filteredIndices.map(i => trace.x[i]),
+            y: filteredIndices.map(i => trace.y[i])
+          };
+        }
       }
       
-      return trace;
+      // Return original trace without modification
+      return { ...trace };
     });
+    
+    console.log('Filtered data traces:', filteredData.length);
+    filteredData.forEach((trace, i) => {
+      console.log(`Trace ${i}: x length=${trace.x?.length}, y length=${trace.y?.length}`);
+      if (trace.x && trace.x.length > 0) {
+        console.log(`  First x value:`, trace.x[0]);
+      }
+    });
+    
+    return filteredData;
   }, [chart, selectedCompanies, selectedMetrics, dateRange, enableFilters, hasTimeSeriesData]);
 
   // Reset filters function
@@ -306,7 +332,8 @@ const PlotlyChartViewer = ({
           data={filteredPlotData}
           layout={plotLayout}
           config={plotConfig}
-          style={{ width, height }}
+          style={{ width: '100%', height: '100%' }}
+          useResizeHandler={true}
           onInitialized={() => setIsLoading(false)}
           onError={(err) => {
             console.error('Plotly error:', err);

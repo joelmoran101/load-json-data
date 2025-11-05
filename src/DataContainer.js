@@ -8,6 +8,7 @@ import ChartSelector from "./components/ChartSelector";
 
 export const DataContainer = ({ children, chartOptions = {} }) => {
   const [displayMode, setDisplayMode] = useState('grid'); // 'grid' or 'single'
+  const [currentChartIndex, setCurrentChartIndex] = useState(0);
   
   const {
     chartData,
@@ -30,7 +31,26 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
   // Handle chart options updates from parent
   const handleUpdateOptions = (newOptions) => {
     updateChartOptions(newOptions);
+    refetch(); // Refetch data with new options
   };
+  
+  // Navigation handlers
+  const navigateChart = (direction) => {
+    if (direction === 'next') {
+      setCurrentChartIndex(prev => 
+        prev >= selectedCharts.length - 1 ? 0 : prev + 1
+      );
+    } else {
+      setCurrentChartIndex(prev => 
+        prev <= 0 ? selectedCharts.length - 1 : prev - 1
+      );
+    }
+  };
+  
+  // Reset index when selection changes
+  React.useEffect(() => {
+    setCurrentChartIndex(0);
+  }, [selectedChartIds.join(',')]);
 
   return (
     <>
@@ -99,16 +119,36 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
             )}
             
             {displayMode === 'single' ? (
-              // Single chart view - show first selected chart
+              // Single chart view with navigation
               <div className="single-chart-container">
-                <h3>{selectedCharts[0].title}</h3>
-                {selectedCharts[0].description && (
-                  <p className="chart-description">{selectedCharts[0].description}</p>
+                {selectedCharts.length > 1 && (
+                  <div className="chart-navigation">
+                    <button 
+                      onClick={() => navigateChart('prev')}
+                      className="nav-button"
+                    >
+                      ← Previous
+                    </button>
+                    <span className="chart-counter">
+                      {currentChartIndex + 1} of {selectedCharts.length}
+                    </span>
+                    <button 
+                      onClick={() => navigateChart('next')}
+                      className="nav-button"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                )}
+                <h3>{selectedCharts[currentChartIndex].title}</h3>
+                {selectedCharts[currentChartIndex].description && (
+                  <p className="chart-description">{selectedCharts[currentChartIndex].description}</p>
                 )}
                 <Plot
-                  data={selectedCharts[0].plotlyData.data}
+                  key={`single-${selectedCharts[currentChartIndex].id}`}
+                  data={selectedCharts[currentChartIndex].plotlyData.data}
                   layout={{
-                    ...selectedCharts[0].plotlyData.layout,
+                    ...selectedCharts[currentChartIndex].plotlyData.layout,
                     autosize: true
                   }}
                   config={{
@@ -127,35 +167,33 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
                 />
               </div>
             ) : (
-              // Grid view - show all selected charts
-              <div className="charts-grid">
+              // Grid view - show all selected charts stacked vertically
+              <div className="charts-grid-display">
                 {selectedCharts.map((chart, index) => (
-                  <div key={chart.id} className="chart-item-grid">
+                  <div key={chart.id} className="grid-chart-item">
                     <div className="chart-header">
                       <h4>{chart.title}</h4>
                       {chart.description && (
                         <p className="chart-description-small">{chart.description}</p>
                       )}
                     </div>
-                    <Plot
-                      data={chart.plotlyData.data}
-                      layout={{
-                        ...chart.plotlyData.layout,
-                        autosize: true,
-                        // Adjust layout for smaller grid items
-                        margin: { l: 50, r: 30, t: 30, b: 50 }
-                      }}
-                      config={{
-                        displayModeBar: false,
-                        displaylogo: false,
-                        responsive: true
-                      }}
-                      style={{ 
-                        width: '100%', 
-                        height: selectedCharts.length === 1 ? '600px' : '400px' 
-                      }}
-                      useResizeHandler={true}
-                    />
+                    <div className="chart-container">
+                      <Plot
+                        key={`grid-${chart.id}`}
+                        data={chart.plotlyData.data}
+                        layout={{
+                          ...chart.plotlyData.layout,
+                          autosize: true
+                        }}
+                        config={{
+                          displayModeBar: true,
+                          displaylogo: false,
+                          responsive: true
+                        }}
+                        style={{ width: '100%', height: '100%' }}
+                        useResizeHandler={true}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -198,41 +236,6 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
           </div>
         )}
         
-        {/* Control panel for testing different options */}
-        <div className="controls-section">
-          <button 
-            onClick={refetch}
-            disabled={loading}
-            className="refresh-button"
-          >
-            {loading ? 'Refreshing...' : 'Refresh Data'}
-          </button>
-          
-          {/* Example: Add filters for different companies/metrics */}
-          <div className="filters">
-            <button 
-              onClick={() => handleUpdateOptions({ company: 'AAPL' })}
-              disabled={loading}
-              className="filter-button"
-            >
-              Show AAPL
-            </button>
-            <button 
-              onClick={() => handleUpdateOptions({ company: 'MSFT' })}
-              disabled={loading}
-              className="filter-button"
-            >
-              Show MSFT
-            </button>
-            <button 
-              onClick={() => handleUpdateOptions({})}
-              disabled={loading}
-              className="filter-button"
-            >
-              Show All
-            </button>
-          </div>
-        </div>
         
         {children}
       </div>

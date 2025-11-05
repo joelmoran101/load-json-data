@@ -265,6 +265,11 @@
   padding: 1rem;
 }
 
+.single-chart-display .chart-container {
+  min-height: 500px;
+  height: 550px;
+}
+
 .chart-navigation {
   display: flex;
   justify-content: space-between;
@@ -295,9 +300,9 @@
 }
 
 .charts-grid-display {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .grid-chart-item {
@@ -305,6 +310,13 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem;
+  width: 100%;
+}
+
+.grid-chart-item .chart-container {
+  min-height: 500px;
+  height: 550px;
+  width: 100%;
 }
 
 /* PlotlyChartViewer Styles */
@@ -490,6 +502,7 @@
 .chart-container {
   position: relative;
   margin: 20px 0;
+  width: 100%;
 }
 
 .chart-loading-overlay {
