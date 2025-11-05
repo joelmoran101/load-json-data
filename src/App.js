@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import JSONExpressPage from './pages/JSONExpressPage';
 import FastAPIPage from './pages/FastAPIPage';
+import SupabasePage from './pages/SupabasePage';
 import { initializeEnvironment } from './utils/envValidation';
 import { initializeCSRFToken } from './utils/csrfToken';
 import './App.css';
@@ -29,6 +30,12 @@ const Navigation = () => {
             className={`nav-link ${location.pathname === '/fastapi-charts' ? 'active' : ''}`}
           >
             FastAPI Plotly Charts
+          </Link>
+          <Link 
+            to="/supabase-charts" 
+            className={`nav-link ${location.pathname === '/supabase-charts' ? 'active' : ''}`}
+          >
+            Supabase Charts
           </Link>
         </div>
       </div>
@@ -61,6 +68,7 @@ function App() {
           <Routes>
             <Route path="/" element={<JSONExpressPage />} />
             <Route path="/fastapi-charts" element={<FastAPIPage />} />
+            <Route path="/supabase-charts" element={<SupabasePage />} />
           </Routes>
         </main>
       </div>
