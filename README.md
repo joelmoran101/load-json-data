@@ -1,12 +1,12 @@
 # Multi-Backend Plotly Dashboard
 
-A React application that displays interactive Plotly charts stored in MongoDB Atlas, connecting to two different backend APIs (Express.js & FastAPI) with dynamic filtering capabilities.
+A React application that displays interactive Plotly charts stored in MongoDB Atlas and Supabase, connecting to three different backend APIs (Express.js, FastAPI, and Supabase) with dynamic filtering capabilities.
 
 ## 🎯 What Does This App Do?
 
-This dashboard fetches and displays Plotly JSON chart data from MongoDB Atlas without modifying the original database. You can:
+This dashboard fetches and displays Plotly JSON chart data from MongoDB Atlas or Supabase without modifying the original database. You can:
 
-- **View charts** from two different backend systems
+- **View charts** from three different backend systems
 • ChartSelector shows list of available charts
 • User clicks a chart
 • PlotlyChartViewer renders the Plotly chart
@@ -26,7 +26,7 @@ Vite offers:
 🎯 Native ES modules support
 🛠️ Modern tooling that's actively maintained
 
-![Architecture Diagram](./public/images/architecture-diagram/architecture-diagram.png)
+![Architecture Diagram](./public/images/architecture-diagram/Architecture_Diagram.png)
 
 ## Deployment Test
 - ** I used Vercel to deploy the frontend React App (load-json-data) 
@@ -34,13 +34,16 @@ Vite offers:
 
 The ReactExpress backend (json-express-api) and the second backend api, fastAPI are both deployed on Render.
 
-- ** ReactExpress json-express-api
+- ** ReactExpress json-express-api (The following link below may have to be clicked to re-activate on Render deployment)
     https://json-express-api.onrender.com/
 
-- ** The second fastAPI-backend (Python)
+- ** The second fastAPI-backend (Python) (The following link below may have to be clicked to re-activate on Render deployment)
     https://fastapi-plotly-backend.onrender.com/
 
-- ** My MongoDB Atlas has to be running and allows access to the IP whitelist, 0.0.0.0/0, to able to test the deployment links above. And cluster(0) has to be connected.
+- ** A third party API (from Nataly) has been included 
+    VITE_SUPABASE_URL=https://your-project.supabase.co + the API secret key.
+
+- ** My MongoDB Atlas has to be running and allows access to the IP whitelist, 0.0.0.0/0, to able to test the deployment links above. And cluster(0) has to be connected. The Supabase API has been set in the .env files so it should connect automatically to the frontend app.
 
 ![MongoDB Atlas Cluster(0)](./public/images/screenshots/MongoDB-Atlas-Cluster.png)
 
@@ -59,6 +62,7 @@ Why Render is better for FastAPI
 - **[CSRF_IMPLEMENTATION.md](./documentation/CSRF_IMPLEMENTATION.md)** - Detailed CSRF protection guide  
 - **[ARCHITECTURE.md](./documentation/ARCHITECTURE.md)** - System architecture, data flow, filtering
 - **[DEVELOPMENT.md](./documentation/DEVELOPMENT.md)** - Development notes, troubleshooting, AI coding tips
+- ** [SUPABASE_SETUP.md](./documentation/SUPABASE_SETUP.md)** - Integration of Supabase notes, troubleshooting
 
 ---
 
@@ -86,7 +90,7 @@ cp .env.example .env
 # Start development server
 npm run dev
 ```
-### Remember to Check MongoDB Atlas connection is running and includes your current IP address!!!
+### Remember to Check MongoDB Atlas connection is running and includes  Whitelist address!!!
 
 ### Available Commands
 
@@ -109,7 +113,9 @@ npm run test     # Run tests with Vitest
 - Modern Python backend
 - Better error handling and validation
 
-Both APIs feed the same React components - that's the power of modular architecture!
+**Supabase API** 3rd Party API from Nataly
+
+All three backend APIs feed the same React components - that's the power of modular architecture!
 
 ---
 
@@ -127,14 +133,15 @@ load-json-data/       # Root Directory
 
 ```
 
-src/.                   # React source code
-├── services/           # API communication layer
-│   ├── api.js          # Express.js API client
+src/.                      # React source code
+├── services/              # API communication layer
+│   ├── api.js             # Express.js API client
 │   ├── fastApiService.js  # FastAPI client
-│   └── authService.js  # Authentication service
+│   ├── supabaseService.js # SupabaseAPI client
+│   └── authService.js     # Authentication service
 │
-├── hooks/              # Custom React hooks for data management
-│   ├── useChartData.js    # JSON Express data
+├── hooks/                  # Custom React hooks for data management
+│   ├── useChartData.js     # JSON Express data
 │   └── useFastAPICharts.js # FastAPI data
 │
 ├── components/         # Reusable UI components
@@ -237,12 +244,12 @@ python3 run.py
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| "Network Error" | Ensure backend APIs are running |
-| CORS errors | Check backend CORS configuration allows `localhost:5173` |
-| Missing charts | Verify MongoDB Atlas connection in backend |
-| Auth failures | Check backend authentication endpoints |
+| Issue            | Solution                                                 |
+|------------------|----------------------------------------------------------|
+| "Network Error"  | Ensure backend APIs are running                          |
+| CORS errors      | Check backend CORS configuration allows `localhost:5173` |
+| Missing charts   | Verify MongoDB Atlas connection in backend               |
+| Auth failures    | Check backend authentication endpoints                   |
 
 See [DEVELOPMENT.md](./documentation/DEVELOPMENT.md) for detailed troubleshooting.
 
