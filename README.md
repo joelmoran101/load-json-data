@@ -284,11 +284,12 @@ See [DEVELOPMENT.md](./documentation/DEVELOPMENT.md) for detailed troubleshootin
 3. **Easy to Test** - Test components independently
 4. **Reusable** - Same components work for both APIs
 
-### Why Two Backends?
+### Why Three Backends?
 
 - **JSON Express** - Demonstrates legacy system integration
 - **FastAPI** - Shows modern backend with better validation
-- **Flexibility** - Same frontend works with different backend technologies. Will be integrating another backend API...
+- **Supabase** - 3rd Party API Integration worked. API and database are both from Nataly.
+- **Flexibility** - Same frontend works with different backend technologies. 
 
 ---
 
