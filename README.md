@@ -228,6 +228,13 @@ See [SECURITY.md](./documentation/SECURITY.md) for complete security documentati
 
 ### Backend Setup
 
+**Start OTP Backend (dedicated for this app):**
+```bash
+cd otp-backend
+npm install
+npm run dev
+```
+
 **Start JSON Express API:**
 ```bash
 cd /path/to/json-express-api

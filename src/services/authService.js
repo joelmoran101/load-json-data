@@ -187,7 +187,8 @@ export const requestOTP = async (request) => {
       
       try {
         // Call backend to generate and send OTP
-        const response = await fetch('http://localhost:3002/api/auth/request-otp', {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+        const response = await fetch(`${backendUrl}/api/auth/request-otp`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

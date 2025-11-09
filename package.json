@@ -21,7 +21,12 @@
     "start": "vite",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "otp:dev": "npm --prefix otp-backend run dev",
+    "otp:start": "npm --prefix otp-backend start",
+    "dev:all": "concurrently -n otp,web -c \"magenta,cyan\" \"npm run otp:dev\" \"npm run dev\"",
+    "start:all": "concurrently -n otp,web -c \"magenta,cyan\" \"npm run otp:start\" \"npm start\"",
+    "postinstall": "npm --prefix otp-backend install"
   },
   "eslintConfig": {
     "extends": [
@@ -44,6 +49,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.4",
     "@vitest/ui": "^3.2.4",
+    "concurrently": "^9.2.1",
     "jsdom": "^27.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
