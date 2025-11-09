@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import JSONExpressPage from './pages/JSONExpressPage';
 import FastAPIPage from './pages/FastAPIPage';
 import SupabasePage from './pages/SupabasePage';
+import ProtectedRoute from './components/ProtectedRoute';
 import { initializeEnvironment } from './utils/envValidation';
 import { initializeCSRFToken } from './utils/csrfToken';
 import './App.css';
@@ -66,9 +67,26 @@ function App() {
         <Navigation />
         <main className="main-content">
           <Routes>
+            {/* Public route - no authentication required */}
             <Route path="/" element={<JSONExpressPage />} />
-            <Route path="/fastapi-charts" element={<FastAPIPage />} />
-            <Route path="/supabase-charts" element={<SupabasePage />} />
+            
+            {/* Protected routes - authentication required */}
+            <Route 
+              path="/fastapi-charts" 
+              element={
+                <ProtectedRoute>
+                  <FastAPIPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/supabase-charts" 
+              element={
+                <ProtectedRoute>
+                  <SupabasePage />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </main>
       </div>
