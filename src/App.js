@@ -5,6 +5,7 @@ import JSONExpressPage from './pages/JSONExpressPage';
 import FastAPIPage from './pages/FastAPIPage';
 import SupabasePage from './pages/SupabasePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import { useAuth } from './hooks/useAuth';
 import { initializeEnvironment } from './utils/envValidation';
 import { initializeCSRFToken } from './utils/csrfToken';
 import './App.css';
@@ -12,6 +13,7 @@ import './App.css';
 // Navigation component
 const Navigation = () => {
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
   
   return (
     <nav className="app-navigation">
@@ -39,6 +41,21 @@ const Navigation = () => {
             Supabase Charts
           </Link>
         </div>
+        {isAuthenticated && user && (
+          <div className="nav-user">
+            <span className="user-info">
+              <span className="user-name">{user.name}</span>
+              <span className="user-role">({user.role})</span>
+            </span>
+            <button 
+              className="logout-button"
+              onClick={logout}
+              title="Sign out"
+            >
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useAuth } from '../hooks/useAuth';
 import Loading from './Loading';
+import OTPLoginModal from './OTPLoginModal';
 
 /**
  * ProtectedRoute component - wraps routes that require authentication
@@ -80,44 +81,34 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  // Not authenticated - show login required message
-  // In Phase 3, we'll replace this with an actual OTP login modal
+  // Not authenticated - show login modal
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '400px',
-      flexDirection: 'column',
-      gap: '1.5rem',
-      padding: '2rem'
-    }}>
+    <>
+      <OTPLoginModal isOpen={showLoginModal} />
       <div style={{
-        backgroundColor: '#fff3cd',
-        border: '1px solid #ffc107',
-        borderRadius: '8px',
-        padding: '2rem',
-        maxWidth: '500px',
-        textAlign: 'center'
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '400px',
+        padding: '2rem'
       }}>
-        <h2 style={{ color: '#856404', marginBottom: '1rem' }}>
-          🔒 Authentication Required
-        </h2>
-        <p style={{ color: '#856404', marginBottom: '1.5rem' }}>
-          This page requires authentication. Please log in to continue.
-        </p>
         <div style={{
-          backgroundColor: '#f8f9fa',
-          padding: '1rem',
-          borderRadius: '4px',
-          marginTop: '1rem'
+          backgroundColor: '#fff3cd',
+          border: '1px solid #ffc107',
+          borderRadius: '8px',
+          padding: '2rem',
+          maxWidth: '500px',
+          textAlign: 'center'
         }}>
-          <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>
-            <strong>Note:</strong> OTP login modal will be added in Phase 3
+          <h2 style={{ color: '#856404', marginBottom: '1rem' }}>
+            🔒 Authentication Required
+          </h2>
+          <p style={{ color: '#856404' }}>
+            Please sign in to access this content.
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
