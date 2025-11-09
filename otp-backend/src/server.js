@@ -3,6 +3,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import { randomInt } from 'node:crypto';
 
 dotenv.config();
 
@@ -11,7 +12,6 @@ const PORT = process.env.PORT || 3002;
 const DEMO_MODE = (process.env.DEMO_MODE || 'true').toLowerCase() === 'true';
 const RAW_CORS = process.env.CORS_ORIGIN || 'http://localhost:5173';
 const ALLOWED_ORIGINS = RAW_CORS.split(',').map(o => o.trim());
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'jm.beaminstitute@gmail.com';
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -71,23 +71,36 @@ app.post('/api/auth/validate-invite', (req, res) => {
 });
 
 // POST /api/auth/request-otp
-app.post('/api/auth/request-otp', (req, res) => {
+app.post('/api/auth/request-otp', async (req, res) => {
   const { email } = req.body || {};
   if (!email || !isValidEmail(email)) {
     return res.status(400).json({ error: 'Valid email is required' });
   }
 
-  // Generate a 6-digit OTP
-  let otp;
-  if (DEMO_MODE && email === ADMIN_EMAIL) {
-    otp = '123456';
-  } else {
-    otp = Math.floor(100000 + Math.random() * 900000).toString();
-  }
+  // Generate a 6-digit OTP (cryptographically strong)
+  const otp = String(randomInt(0, 1_000_000)).padStart(6, '0');
 
-  // In real production, send the OTP via email and DO NOT include it in the response.
-  // For local/demo, return it so the current frontend flow can hash/verify client-side.
-  return res.status(200).json({ success: true, otp, isDemoMode: DEMO_MODE });
+  const shouldSendEmail = (process.env.SEND_EMAIL || 'false').toLowerCase() === 'true';
+
+  try {
+    if (shouldSendEmail) {
+      const { sendOtpEmail } = await import('./mailer.js');
+      await sendOtpEmail(email, otp);
+      // In email mode, do not expose OTP unless also in demo mode
+      const body = DEMO_MODE ? { success: true, otp, delivered: true } : { success: true, delivered: true };
+      return res.status(200).json(body);
+    }
+
+    // Demo/local mode - return OTP in response
+    return res.status(200).json({ success: true, otp, isDemoMode: DEMO_MODE });
+  } catch (err) {
+    console.error('Failed to send OTP email:', err);
+    if (!DEMO_MODE) {
+      return res.status(500).json({ error: 'Failed to send OTP email' });
+    }
+    // Fallback for demo: still return OTP
+    return res.status(200).json({ success: true, otp, delivered: false, isDemoMode: DEMO_MODE });
+  }
 });
 
 app.use((err, _req, res, _next) => {
