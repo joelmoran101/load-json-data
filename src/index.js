@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { initializeCSRFToken } from './utils/csrfToken';
+import { AuthProvider } from './contexts/AuthContext';
 
 // Initialize CSRF token on app startup
 initializeCSRFToken();
@@ -11,7 +12,9 @@ initializeCSRFToken();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );
 
