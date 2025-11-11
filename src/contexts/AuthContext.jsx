@@ -1,6 +1,6 @@
 import { createContext, useReducer, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { requestOTP, verifyOTP, register, getCurrentUser, logout as authLogout } from '../services/authService';
+import { requestOTP, verifyOTP, register, getCurrentUser, logout as authLogout, requestInvite, validateInviteCode } from '../services/authService';
 import { secureUserStorage, secureTokenStorage, legacyStorage, isSecureStorageAvailable, clearSecureAuthData } from '../utils/secureStorage';
 
 /**
@@ -19,7 +19,11 @@ const initialState = {
   error: null,
   otpSent: false,
   otpEmail: null,
-  isDemo: false
+  isDemo: false,
+  // Modal state
+  isAuthModalOpen: false,
+  authModalStep: 'choose', // 'choose' | 'login' | 'register:choose' | 'register:request' | 'register:verify'
+  selectedEmail: null
 };
 
 const authReducer = (state, action) => {
@@ -88,12 +92,25 @@ const authReducer = (state, action) => {
         error: null,
         otpSent: false,
         otpEmail: null,
-        isDemo: false
+        isDemo: false,
+        isAuthModalOpen: false,
+        authModalStep: 'choose',
+        selectedEmail: null
       };
     case 'CLEAR_ERROR':
       return { ...state, error: null };
     case 'RESET_OTP':
       return { ...state, otpSent: false, otpEmail: null };
+    case 'AUTH_END':
+      return { ...state, isLoading: false };
+    case 'AUTH_MODAL_OPEN':
+      return { ...state, isAuthModalOpen: true, authModalStep: action.payload?.step || 'choose', selectedEmail: action.payload?.email || null };
+    case 'AUTH_MODAL_CLOSE':
+      return { ...state, isAuthModalOpen: false, authModalStep: 'choose', selectedEmail: null, error: null, otpSent: false, otpEmail: null };
+    case 'AUTH_MODAL_STEP':
+      return { ...state, authModalStep: action.payload, error: null };
+    case 'SET_SELECTED_EMAIL':
+      return { ...state, selectedEmail: action.payload };
     default:
       return state;
   }
@@ -231,17 +248,62 @@ export const AuthProvider = ({ children }) => {
     return demoOTP;
   }, []);
 
+  const openAuthModal = useCallback((step = 'choose', email = null) => {
+    dispatch({ type: 'AUTH_MODAL_OPEN', payload: { step, email } });
+  }, []);
+
+  const closeAuthModal = useCallback(() => {
+    dispatch({ type: 'AUTH_MODAL_CLOSE' });
+  }, []);
+
+  const goToAuthStep = useCallback((step) => {
+    dispatch({ type: 'AUTH_MODAL_STEP', payload: step });
+  }, []);
+
+  const handleRequestInvite = useCallback(async (email) => {
+    if (import.meta.env.DEV) console.log('📨 AuthContext: requestInvite start', email);
+    dispatch({ type: 'AUTH_START' });
+    try {
+      const result = await requestInvite(email);
+      if (import.meta.env.DEV) console.log('📨 AuthContext: requestInvite success', result);
+      dispatch({ type: 'SET_SELECTED_EMAIL', payload: email });
+      // Do NOT change step here; UI will show "request submitted" message
+      dispatch({ type: 'CLEAR_ERROR' });
+      return result;
+    } catch (error) {
+      if (import.meta.env.DEV) console.error('📨 AuthContext: requestInvite failed', error);
+      dispatch({ type: 'AUTH_FAILURE', payload: error instanceof Error ? error.message : 'Failed to request invitation' });
+      throw error;
+    } finally {
+      dispatch({ type: 'AUTH_END' });
+    }
+  }, []);
+
+  const handleValidateInvite = useCallback(async (code, email) => {
+    try {
+      const res = await validateInviteCode(code, email);
+      return res;
+    } catch (e) {
+      throw e;
+    }
+  }, []);
+
   const contextValue = useMemo(() => ({
     ...state,
     requestOTP: handleRequestOTP,
     verifyOTP: handleVerifyOTP,
     register: handleRegister,
+    requestInvite: handleRequestInvite,
+    validateInvite: handleValidateInvite,
+    openAuthModal,
+    closeAuthModal,
+    goToAuthStep,
     enterDemoMode: handleEnterDemoMode,
     simulateDemoOTP: simulateDemoOTP,
     logout: handleLogout,
     clearError: handleClearError,
     resetOTP: handleResetOTP
-  }), [state, handleRequestOTP, handleVerifyOTP, handleRegister, handleEnterDemoMode, simulateDemoOTP, handleLogout, handleClearError, handleResetOTP]);
+  }), [state, handleRequestOTP, handleVerifyOTP, handleRegister, handleRequestInvite, handleValidateInvite, openAuthModal, closeAuthModal, goToAuthStep, handleEnterDemoMode, simulateDemoOTP, handleLogout, handleClearError, handleResetOTP]);
 
   return (
     <AuthContext.Provider value={contextValue}>

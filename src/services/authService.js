@@ -314,47 +314,18 @@ export const verifyOTP = async (verification) => {
  * @returns {Promise<User>}
  */
 export const register = async (data) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // Find and validate invite code
-      const inviteCode = MOCK_INVITE_CODES.find(
-        code => code.code === data.inviteCode && 
-                code.email === data.email &&
-                !code.isUsed &&
-                new Date() < code.expiresAt
-      );
-      
-      if (!inviteCode) {
-        reject(new Error('Invalid or expired invitation code'));
-        return;
-      }
-      
-      // Check if user already exists
-      if (MOCK_USERS.find(u => u.email === data.email)) {
-        reject(new Error('User already exists'));
-        return;
-      }
-      
-      // Create new user
-      const newUser = {
-        id: Date.now().toString(),
-        email: data.email,
-        name: data.name,
-        role: inviteCode.role,
-        invitedBy: inviteCode.invitedBy,
-        invitedAt: inviteCode.createdAt,
-        lastLogin: new Date()
-      };
-      
-      // Mark invite code as used
-      inviteCode.isUsed = true;
-      
-      // Add user to mock database
-      MOCK_USERS.push(newUser);
-      
-      resolve(newUser);
-    }, 1500); // Simulate network delay
+  // Delegate to backend which validates invite code and returns user
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+  const response = await fetch(`${backendUrl}/api/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: data.email, name: data.name, inviteCode: data.inviteCode })
   });
+  const result = await response.json();
+  if (!response.ok || !result.success) {
+    throw new Error(result.error || 'Registration failed');
+  }
+  return result.user;
 };
 
 /**
@@ -364,60 +335,102 @@ export const register = async (data) => {
  * @returns {Promise<InviteCode>}
  */
 export const validateInviteCode = async (code, email) => {
-  try {
-    // Try backend API first if backend URL is configured
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
-    
-    const response = await fetch(`${backendUrl}/api/auth/validate-invite`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ inviteCode: code, email })
-    });
-    
-    const result = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(result.error || 'Validation failed');
-    }
-    
-    if (result.success && result.valid) {
-      // Convert backend response to InviteCode format
-      return {
-        code,
-        email,
-        role: result.role,
-        expiresAt: new Date('2025-12-31'), // Default expiry
-        isUsed: false,
-        invitedBy: result.invitedBy,
-        createdAt: new Date('2024-01-01')
-      };
-    }
-    
-    throw new Error('Invalid invitation code');
-  } catch (error) {
-    // Fallback to mock validation if backend is not available
-    console.warn('Backend validation failed, falling back to mock data:', error);
-    
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const inviteCode = MOCK_INVITE_CODES.find(
-          inv => inv.code === code && 
-                 inv.email === email &&
-                 !inv.isUsed &&
-                 new Date() < inv.expiresAt
-        );
-        
-        if (!inviteCode) {
-          reject(new Error('Invalid or expired invitation code'));
-          return;
-        }
-        
-        resolve(inviteCode);
-      }, 500);
-    });
+  // Only backend validation; no mock fallback
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+  const response = await fetch(`${backendUrl}/api/auth/validate-invite`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ inviteCode: code, email })
+  });
+  const result = await response.json();
+  if (!response.ok) {
+    throw new Error(result.error || 'Validation failed');
   }
+  if (result.success && result.valid) {
+    return {
+      valid: true,
+      code,
+      email,
+      role: result.role,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      isUsed: false,
+      invitedBy: result.invitedBy,
+      createdAt: new Date()
+    };
+  }
+  throw new Error('Invalid invitation code');
+};
+
+/**
+ * Request an invitation code (demo implementation)
+ * @param {string} email
+ * @returns {Promise<{success: boolean, inviteCode?: string, delivered?: boolean}>}
+ */
+export const requestInvite = async (email) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+  const response = await fetch(`${backendUrl}/api/auth/request-invite`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+  const result = await response.json();
+  if (!response.ok || !result.success) {
+    throw new Error(result.error || 'Request failed');
+  }
+  return result;
+};
+
+// Admin services (dev-only convenience; header-based auth)
+const adminHeaders = () => {
+  const headers = { 'Content-Type': 'application/json' };
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+  if (adminEmail) headers['x-admin-email'] = adminEmail;
+  return headers;
+};
+
+export const adminListInviteRequests = async (status) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+  const url = new URL(`${backendUrl}/api/admin/invite-requests`);
+  if (status) url.searchParams.set('status', status);
+  const res = await fetch(url.toString(), { headers: adminHeaders() });
+  const data = await res.json();
+  if (!res.ok || !data.success) throw new Error(data.error || 'Failed to fetch invite requests');
+  return data.requests;
+};
+
+export const adminApproveInviteRequest = async (id) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+  const res = await fetch(`${backendUrl}/api/admin/invite-requests/${id}/approve`, {
+    method: 'POST',
+    headers: adminHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) throw new Error(data.error || 'Failed to approve');
+  return data.code;
+};
+
+export const adminDenyInviteRequest = async (id) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+  const res = await fetch(`${backendUrl}/api/admin/invite-requests/${id}/deny`, {
+    method: 'POST',
+    headers: adminHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) throw new Error(data.error || 'Failed to deny');
+  return true;
+};
+
+export const adminSendInviteCode = async (id) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+  const res = await fetch(`${backendUrl}/api/admin/invite-requests/${id}/send-code`, {
+    method: 'POST',
+    headers: adminHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) throw new Error(data.error || 'Failed to send code');
+  return data;
 };
 
 /**

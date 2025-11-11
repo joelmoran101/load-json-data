@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useAuth } from '../hooks/useAuth';
 import Loading from './Loading';
-import OTPLoginModal from './OTPLoginModal';
+import AuthModal from './AuthModal';
 
 /**
  * ProtectedRoute component - wraps routes that require authentication
  * Shows loading while checking auth, then either shows content or login modal
  */
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, isLoading, user } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { isAuthenticated, isLoading, user, isAuthModalOpen, openAuthModal, closeAuthModal } = useAuth();
 
   useEffect(() => {
-    // If not loading and not authenticated, show login modal
     if (!isLoading && !isAuthenticated) {
-      setShowLoginModal(true);
+      openAuthModal('choose');
     } else {
-      setShowLoginModal(false);
+      closeAuthModal();
     }
-  }, [isLoading, isAuthenticated]);
+  }, [isLoading, isAuthenticated, openAuthModal, closeAuthModal]);
 
   // Show loading spinner while checking authentication
   if (isLoading) {
@@ -84,7 +82,7 @@ const ProtectedRoute = ({ children }) => {
   // Not authenticated - show login modal
   return (
     <>
-      <OTPLoginModal isOpen={showLoginModal} />
+      <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
       <div style={{
         display: 'flex',
         justifyContent: 'center',

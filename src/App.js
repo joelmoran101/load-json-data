@@ -5,6 +5,7 @@ import JSONExpressPage from './pages/JSONExpressPage';
 import FastAPIPage from './pages/FastAPIPage';
 import SupabasePage from './pages/SupabasePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminInvitesPage from './pages/AdminInvitesPage';
 import { useAuth } from './hooks/useAuth';
 import { initializeEnvironment } from './utils/envValidation';
 import { initializeCSRFToken } from './utils/csrfToken';
@@ -43,6 +44,15 @@ const Navigation = () => {
         </div>
         {isAuthenticated && user && (
           <div className="nav-user">
+            {user.role === 'Admin' && (
+              <Link 
+                to="/admin/invites" 
+                className={`nav-link ${location.pathname === '/admin/invites' ? 'active' : ''}`}
+                style={{ marginRight: '1rem' }}
+              >
+                Admin
+              </Link>
+            )}
             <span className="user-info">
               <span className="user-name">{user.name}</span>
               <span className="user-role">({user.role})</span>
@@ -101,6 +111,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SupabasePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/invites" 
+              element={
+                <ProtectedRoute>
+                  <AdminInvitesPage />
                 </ProtectedRoute>
               } 
             />
