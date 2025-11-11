@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import './OTPLoginModal.css';
 
 const OTPLoginModal = ({ isOpen, onClose }) => {
   const { requestOTP, verifyOTP, isLoading, error, otpSent, otpEmail, resetOTP, clearError } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -107,6 +109,18 @@ const OTPLoginModal = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleCloseAndGoHome = () => {
+    if (isLoading) return;
+    resetOTP();
+    setEmail('');
+    setOtp('');
+    setEmailError('');
+    setOtpError('');
+    clearError();
+    if (onClose) onClose();
+    navigate('/');
+  };
+
   if (!isOpen) return null;
 
   const isAccountLocked = error && error.includes('ACCOUNT_PERMANENTLY_LOCKED');
@@ -118,7 +132,7 @@ const OTPLoginModal = ({ isOpen, onClose }) => {
       <div className="otp-modal-content" onClick={(e) => e.stopPropagation()}>
         <button 
           className="otp-modal-close" 
-          onClick={handleClose}
+          onClick={handleCloseAndGoHome}
           disabled={isLoading}
           aria-label="Close modal"
         >
