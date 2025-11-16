@@ -141,9 +141,6 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
                   </div>
                 )}
                 <h3>{selectedCharts[currentChartIndex].title}</h3>
-                {selectedCharts[currentChartIndex].description && (
-                  <p className="chart-description">{selectedCharts[currentChartIndex].description}</p>
-                )}
                 <Plot
                   key={`single-${selectedCharts[currentChartIndex].id}`}
                   data={selectedCharts[currentChartIndex].plotlyData.data}
@@ -162,38 +159,52 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
                       'autoScale2d'
                     ]
                   }}
+                  /* Fixed pixel height so the SVG cannot overlap following content */
                   style={{ width: '100%', height: '600px' }}
                   useResizeHandler={true}
                 />
+
+                {selectedCharts[currentChartIndex].description && (
+                  <p className="chart-description chart-description-below">
+                    {selectedCharts[currentChartIndex].description}
+                  </p>
+                )}
               </div>
             ) : (
               // Grid view - show all selected charts stacked vertically
               <div className="charts-grid-display">
                 {selectedCharts.map((chart, index) => (
                   <div key={chart.id} className="grid-chart-item">
-                    <div className="chart-header">
-                      <h4>{chart.title}</h4>
-                      {chart.description && (
-                        <p className="chart-description-small">{chart.description}</p>
-                      )}
-                    </div>
-                    <div className="chart-container">
-                      <Plot
-                        key={`grid-${chart.id}`}
-                        data={chart.plotlyData.data}
-                        layout={{
-                          ...chart.plotlyData.layout,
-                          autosize: true
-                        }}
-                        config={{
-                          displayModeBar: true,
-                          displaylogo: false,
-                          responsive: true
-                        }}
-                        style={{ width: '100%', height: '100%' }}
-                        useResizeHandler={true}
-                      />
-                    </div>
+                  <div className="chart-header">
+                    <h4>{chart.title}</h4>
+                  </div>
+                  <div className="chart-container">
+                    <Plot
+                      key={`grid-${chart.id}`}
+                      data={chart.plotlyData.data}
+                      layout={{
+                        ...chart.plotlyData.layout,
+                        autosize: true,
+                        margin: { l: 50, r: 50, t: 50, b: 50 }, // from PlotlyChartViewer
+                      }}
+                      config={{
+                        displayModeBar: true,
+                        displaylogo: false,
+                        modeBarButtonsToRemove: ['pan2d', 'lasso2d'], // same toolbar
+                        responsive: true
+                      }}
+                      /* Fixed pixel height to avoid Plotly overflowing and covering the description */
+                      style={{ width: '100%', height: '600px' }}
+                      useResizeHandler={true}
+                    />
+                  </div>
+
+                  {chart.description && (
+                    <p className="chart-description chart-description-below">
+                      {chart.description}
+                    </p>
+                  )}
+                    
                   </div>
                 ))}
               </div>

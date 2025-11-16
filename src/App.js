@@ -16,7 +16,7 @@ const Navigation = () => {
     <nav className="app-navigation">
       <div className="nav-container">
         <div className="nav-brand">
-          <h2>Multi-Backend Dashboard</h2>
+          <h2>Multi-Backend Financial Analytic Dashboard</h2>
         </div>
         <div className="nav-links">
           <Link 

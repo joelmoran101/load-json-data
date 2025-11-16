@@ -7,8 +7,8 @@ const JSONExpressPage = () => {
   return (
     <div className="json-express-page">
       <div className="page-header">
-        <h1>JSON Express API Dashboard</h1>
-        <p>Manage data and charts using the JSON Express backend</p>
+        <h1>Plotly JSON Express Financial Data Dashboard</h1>
+        <p>This App Displays Different Plotly JSON Chart Visualizations of the Financial Data of diverse Companies that are stored in different databases and are accessed via corresponding Backend APIs.</p>
       </div>
       <AuthTest />
       <DataContainer />

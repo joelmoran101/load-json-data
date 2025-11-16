@@ -85,6 +85,17 @@
   padding: 2rem;
   margin-bottom: 2rem;
 }
+.chart-description-below {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+.grid-chart-item .chart-description-below,
+.single-chart-display .chart-description-below {
+  text-align: left;
+}
 
 .coming-soon {
   text-align: center;
@@ -266,8 +277,9 @@
 }
 
 .single-chart-display .chart-container {
-  min-height: 500px;
-  height: 550px;
+  /* Let the Plot component control its own height via inline styles */
+  min-height: 0;
+  height: auto;
 }
 
 .chart-navigation {
@@ -314,8 +326,9 @@
 }
 
 .grid-chart-item .chart-container {
-  min-height: 500px;
-  height: 550px;
+  /* Let the Plot component control its own height via inline styles */
+  min-height: 0;
+  height: auto;
   width: 100%;
 }
 
@@ -503,6 +516,7 @@
   position: relative;
   margin: 20px 0;
   width: 100%;
+  overflow: hidden;
 }
 
 .chart-loading-overlay {
@@ -652,7 +666,8 @@
 .chart-item {
   border: 2px solid #e0e0e0;
   border-radius: 6px;
-  padding: 15px;
+  padding: 1rem;
+  margin-bottom: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   background: white;
@@ -667,6 +682,14 @@
   border-color: #007bff;
   background-color: #f8f9ff;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+}
+
+/* Ensure chart items expand to fit multi-line descriptions */
+.chart-item,
+.chart-item.selected {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
 }
 
 .chart-item-content {
