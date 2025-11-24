@@ -85,7 +85,7 @@ const SupabasePage = () => {
     <div className="fastapi-page">
       <div className="page-header">
         <h1>Supabase Plotly Dashboard</h1>
-        <p>View Plotly charts stored in Supabase by Nataly's Python backend</p>
+        <p>The dynamics of Cash and Cash-Equivalent Position (CCP) and Long-Term Debt (LTD) for several companies over multiple years. You can quickly identify trends and assess the financial stability of these companies.</p>
         {renderConnectionStatus()}
       </div>
 

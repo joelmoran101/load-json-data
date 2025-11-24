@@ -332,7 +332,6 @@ const PlotlyChartViewer = ({
           data={filteredPlotData}
           layout={plotLayout}
           config={plotConfig}
-          /* Use an explicit pixel height so Plotly doesn't overflow and cover following content */
           style={{ width: '100%', height: '100%' }}
           useResizeHandler={true}
           onInitialized={() => setIsLoading(false)}

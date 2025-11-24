@@ -159,8 +159,7 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
                       'autoScale2d'
                     ]
                   }}
-                  /* Fixed pixel height so the SVG cannot overlap following content */
-                  style={{ width: '100%', height: '600px' }}
+                  style={{ width: '100%', height: '100%' }}
                   useResizeHandler={true}
                 />
 
@@ -194,7 +193,7 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
                         responsive: true
                       }}
                       /* Fixed pixel height to avoid Plotly overflowing and covering the description */
-                      style={{ width: '100%', height: '600px' }}
+                      style={{ width: '100%', height: '100%' }}
                       useResizeHandler={true}
                     />
                   </div>
@@ -241,7 +240,7 @@ export const DataContainer = ({ children, chartOptions = {} }) => {
                   'autoScale2d'
                 ]
               }}
-              style={{ width: '100%', height: '600px' }}
+              style={{ width: '100%', height: '100%' }}
               useResizeHandler={true}
             />
           </div>

@@ -85,11 +85,21 @@
   padding: 2rem;
   margin-bottom: 2rem;
 }
+
+/* ===== FIXED CHART DESCRIPTION STYLES ===== */
 .chart-description-below {
   margin-top: 0.75rem;
   font-size: 0.9rem;
   color: #555;
   line-height: 1.4;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  max-width: 100%;
+  flex-shrink: 0; /* Prevent description from being compressed */
 }
 
 .grid-chart-item .chart-description-below,
@@ -97,6 +107,114 @@
   text-align: left;
 }
 
+/* ===== IMPROVED CHART CONTAINER STRUCTURES ===== */
+.grid-chart-item {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Important for flex children */
+  overflow: visible; /* Ensure content isn't clipped */
+}
+
+.grid-chart-item .chart-container {
+  flex: 1;
+  min-height: 400px; /* Fixed height for chart */
+  position: relative;
+  overflow: hidden; /* Prevent Plotly overflow */
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  background: white;
+}
+
+.grid-chart-item .chart-description-below {
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 4px;
+  border-left: 3px solid #007bff;
+}
+
+/* Single chart view fixes */
+.single-chart-container {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 600px; /* Ensure minimum height */
+}
+
+.single-chart-container .chart-container {
+  flex: 1;
+  min-height: 500px; /* Fixed chart area */
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  background: white;
+}
+
+.single-chart-container .chart-description-below {
+  flex-shrink: 0;
+  margin-top: 1rem;
+  padding: 0 1rem;
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 4px;
+  border-left: 3px solid #28a745;
+}
+
+/* ===== CHART DISPLAY LAYOUT IMPROVEMENTS ===== */
+.charts-display {
+  margin: 20px 0;
+  position: relative;
+}
+
+.charts-display.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.charts-grid-display {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.chart-header {
+  margin-bottom: 15px;
+  flex-shrink: 0; /* Prevent header from being compressed */
+}
+
+.chart-header h4 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 1em;
+}
+
+/* Loading overlay improvements */
+.chart-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 8px;
+}
+
+/* ===== EXISTING STYLES (UPDATED WHERE NEEDED) ===== */
 .coming-soon {
   text-align: center;
   padding: 3rem;
@@ -269,19 +387,6 @@
   color: #666;
 }
 
-.single-chart-display {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-}
-
-.single-chart-display .chart-container {
-  /* Let the Plot component control its own height via inline styles */
-  min-height: 0;
-  height: auto;
-}
-
 .chart-navigation {
   display: flex;
   justify-content: space-between;
@@ -290,6 +395,7 @@
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 6px;
+  flex-shrink: 0; /* Prevent navigation from being compressed */
 }
 
 .nav-button {
@@ -311,30 +417,10 @@
   color: #333;
 }
 
-.charts-grid-display {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.grid-chart-item {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  width: 100%;
-}
-
-.grid-chart-item .chart-container {
-  /* Let the Plot component control its own height via inline styles */
-  min-height: 0;
-  height: auto;
-  width: 100%;
-}
-
 /* PlotlyChartViewer Styles */
 .plotly-chart-viewer {
   width: 100%;
+  height: 100%;
 }
 
 .chart-controls {
@@ -511,28 +597,6 @@
   font-style: italic;
 }
 
-/* Chart container styles */
-.chart-container {
-  position: relative;
-  margin: 20px 0;
-  width: 100%;
-  overflow: hidden;
-}
-
-.chart-loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  border-radius: 8px;
-}
-
 /* Controls section styles */
 .controls-section {
   margin-top: 30px;
@@ -671,6 +735,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   background: white;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
 }
 
 .chart-item:hover {
@@ -682,14 +749,6 @@
   border-color: #007bff;
   background-color: #f8f9ff;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
-}
-
-/* Ensure chart items expand to fit multi-line descriptions */
-.chart-item,
-.chart-item.selected {
-  height: auto;
-  min-height: 0;
-  overflow: visible;
 }
 
 .chart-item-content {
@@ -779,31 +838,7 @@
   border-color: #007bff;
 }
 
-/* Charts Display */
-.charts-display {
-  margin: 20px 0;
-}
-
-.single-chart-container {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.single-chart-container h3 {
-  margin: 0 0 10px 0;
-  color: #333;
-  text-align: center;
-}
-
-.single-chart-container .chart-description {
-  text-align: center;
-  margin-bottom: 20px;
-  font-style: italic;
-  color: #666;
-}
-
+/* Charts Grid Display */
 .charts-grid {
   display: grid;
   gap: 20px;
@@ -816,21 +851,14 @@
   padding: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .chart-item-grid:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.chart-header {
-  margin-bottom: 15px;
-}
-
-.chart-header h4 {
-  margin: 0 0 5px 0;
-  color: #333;
-  font-size: 1em;
 }
 
 .chart-description-small {
@@ -840,18 +868,24 @@
   line-height: 1.3;
 }
 
-.chart-loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
+/* Fallback chart display */
+.fallback-chart-display {
+  background: white;
   border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+.fallback-chart-display h3 {
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+.fallback-chart-display p {
+  color: #666;
+  margin-bottom: 15px;
+  font-style: italic;
 }
 
 /* Responsive design */
@@ -913,5 +947,18 @@
   
   .mode-button {
     width: 100%;
+  }
+  
+  /* Mobile adjustments for chart containers */
+  .grid-chart-item .chart-container {
+    min-height: 300px; /* Smaller fixed height on mobile */
+  }
+  
+  .single-chart-container .chart-container {
+    min-height: 400px; /* Smaller fixed height on mobile */
+  }
+  
+  .single-chart-container {
+    min-height: 500px; /* Adjust overall container height */
   }
 }
