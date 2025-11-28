@@ -726,6 +726,7 @@
   display: grid;
   gap: 15px;
   grid-template-rows: auto;
+  grid-auto-rows: minmax(min-content, max-content);
 }
 
 /* === CRITICAL FIX FOR GRID CHILDREN TRUNCATION === */
@@ -784,6 +785,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .chart-checkbox input {
