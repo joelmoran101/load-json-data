@@ -725,6 +725,22 @@
 .chart-list {
   display: grid;
   gap: 15px;
+  grid-template-rows: auto;
+}
+
+/* === CRITICAL FIX FOR GRID CHILDREN TRUNCATION === */
+.chart-selector .chart-list {
+    /* Ensures grid rows automatically size themselves based on content. 
+       This prevents containers from being restricted to a single-line height. */
+    grid-template-rows: auto;
+    
+    /* Ensure no hidden overflow from external rules */
+    overflow: visible;
+}
+
+/* Fallback/Guarantee for the item itself */
+.chart-item {
+    min-height: min-content; /* Ensure minimum height respects content */
 }
 
 .chart-item {
