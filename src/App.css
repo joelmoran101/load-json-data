@@ -731,7 +731,6 @@
   border: 2px solid #e0e0e0;
   border-radius: 6px;
   padding: 1rem;
-  margin-bottom: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   background: white;
@@ -749,6 +748,13 @@
   border-color: #007bff;
   background-color: #f8f9ff;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+}
+
+.chart-selector .chart-item .chart-description {
+  white-space: normal; /* Force text to wrap instead of staying on one line */
+  overflow: visible;   /* Ensure text is not hidden */
+  text-overflow: clip; /* Ensure no text-overflow rule is forcing truncation */
+  word-wrap: break-word;
 }
 
 .chart-item-content {
