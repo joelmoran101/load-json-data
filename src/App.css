@@ -759,6 +759,7 @@
 
 .chart-item-content {
   display: flex;
+  min-height: 0;
   flex-direction: column;
   gap: 10px;
 }
@@ -787,6 +788,8 @@
   color: #666;
   font-size: 14px;
   line-height: 1.4;
+  flex-shrink: 0;
+  white-space: normal;
 }
 
 .chart-metadata {
