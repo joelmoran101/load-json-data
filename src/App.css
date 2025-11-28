@@ -763,7 +763,7 @@
 
 .chart-item.selected {
   border-color: #007bff;
-  background-color: #f8f9ff;
+  background-color: #6bd91c;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
 }
 
